@@ -1,0 +1,14 @@
+[package]
+name = "isatty"
+version = "0.1.0"
+authors = ["David Tolnay <dtolnay@gmail.com>"]
+license = "MIT/Apache-2.0"
+description = "libc::isatty that also works on Windows"
+repository = "https://github.com/dtolnay/isatty"
+documentation = "https://github.com/dtolnay/isatty"
+keywords = ["tty"]
+
+[dependencies]
+kernel32-sys = "0.2"
+libc = "0.2"
+winapi = "0.2"
