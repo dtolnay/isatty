@@ -8,7 +8,9 @@ repository = "https://github.com/dtolnay/isatty"
 documentation = "https://github.com/dtolnay/isatty"
 keywords = ["tty"]
 
-[dependencies]
-kernel32-sys = "0.2"
+[target.'cfg(unix)'.dependencies]
 libc = "0.2"
+
+[target.'cfg(windows)'.dependencies]
+kernel32-sys = "0.2"
 winapi = "0.2"
