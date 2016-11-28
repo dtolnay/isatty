@@ -1,3 +1,6 @@
+// Based on:
+//  - https://github.com/rust-lang/cargo/blob/099ad28104fe319f493dc42e0c694d468c65767d/src/cargo/lib.rs#L154-L178
+//  - https://github.com/BurntSushi/ripgrep/issues/94#issuecomment-261761687
 
 pub fn stdout_isatty() -> bool {
     isatty(Stream::Stdout)
@@ -54,8 +57,6 @@ fn isatty(stream: Stream) -> bool {
 /// Returns true if there is an MSYS/cygwin tty on the given handle.
 #[cfg(windows)]
 fn is_cygwin_pty(handle: winapi::HANDLE) -> bool {
-    // from https://github.com/BurntSushi/ripgrep/issues/94#issuecomment-261761687
-
     use std::ffi::OsString;
     use std::mem;
     use std::os::raw::c_void;
