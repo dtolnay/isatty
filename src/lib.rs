@@ -15,11 +15,9 @@ enum Stream {
     Stderr,
 }
 
-
 #[cfg(unix)]
 fn isatty(stream: Stream) -> bool {
     extern crate libc;
-
 
     let fd = match stream {
         Stream::Stdout => libc::STDOUT_FILENO,
@@ -40,6 +38,7 @@ fn isatty(stream: Stream) -> bool {
         Stream::Stdout => winapi::winbase::STD_OUTPUT_HANDLE,
         Stream::Stderr => winapi::winbase::STD_ERROR_HANDLE,
     };
+
     unsafe {
         let handle = kernel32::GetStdHandle(handle);
 
@@ -47,7 +46,6 @@ fn isatty(stream: Stream) -> bool {
         if is_cygwin_pty(handle) {
             return true;
         }
-
 
         let mut out = 0;
         kernel32::GetConsoleMode(handle, &mut out) != 0
