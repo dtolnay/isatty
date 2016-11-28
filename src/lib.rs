@@ -3,14 +3,13 @@
 //  - https://github.com/BurntSushi/ripgrep/issues/94#issuecomment-261761687
 
 pub fn stdout_isatty() -> bool {
-    isatty(Stream::Stdout)
+    isatty(stream::Stream::Stdout)
 }
 
 pub fn stderr_isatty() -> bool {
-    isatty(Stream::Stderr)
+    isatty(stream::Stream::Stderr)
 }
 
-use stream::Stream;
 mod stream {
     pub enum Stream {
         Stdout,
@@ -22,7 +21,7 @@ mod stream {
 use unix::isatty;
 #[cfg(unix)]
 mod unix {
-    use Stream;
+    use stream::Stream;
 
     pub fn isatty(stream: Stream) -> bool {
         extern crate libc;
@@ -43,7 +42,7 @@ mod windows {
     extern crate kernel32;
     extern crate winapi;
 
-    use Stream;
+    use stream::Stream;
 
     pub fn isatty(stream: Stream) -> bool {
         let handle = match stream {
