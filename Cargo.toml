@@ -10,6 +10,10 @@ keywords = ["tty"]
 categories = ["command-line-interface"]
 readme = "README.md"
 
+[badges]
+travis-ci = { repository = "dtolnay/isatty" }
+appveyor = { repository = "dtolnay/isatty" }
+
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
 

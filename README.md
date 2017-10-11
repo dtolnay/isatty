@@ -1,6 +1,7 @@
 # Rust isatty
 
 [![Build Status](https://travis-ci.org/dtolnay/isatty.svg?branch=master)](https://travis-ci.org/dtolnay/isatty)
+[![Build Status](https://ci.appveyor.com/api/projects/status/5aq0inkv7eip6udp/branch/master?svg=true)](https://ci.appveyor.com/project/dtolnay/isatty/branch/master)
 [![Latest Version](https://img.shields.io/crates/v/isatty.svg)](https://crates.io/crates/isatty)
 
 This crate provides the following three functions:
