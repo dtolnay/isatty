@@ -2,6 +2,11 @@
 //  - https://github.com/rust-lang/cargo/blob/099ad28104fe319f493dc42e0c694d468c65767d/src/cargo/lib.rs#L154-L178
 //  - https://github.com/BurntSushi/ripgrep/issues/94#issuecomment-261761687
 
+#[cfg(unix)]
+pub fn stdin_isatty() -> bool {
+    isatty(stream::Stream::Stdin)
+}
+
 pub fn stdout_isatty() -> bool {
     isatty(stream::Stream::Stdout)
 }
@@ -12,6 +17,8 @@ pub fn stderr_isatty() -> bool {
 
 mod stream {
     pub enum Stream {
+        #[cfg(unix)]
+        Stdin,
         Stdout,
         Stderr,
     }
@@ -27,6 +34,7 @@ mod unix {
         extern crate libc;
 
         let fd = match stream {
+            Stream::Stdin => libc::STDIN_FILENO,
             Stream::Stdout => libc::STDOUT_FILENO,
             Stream::Stderr => libc::STDERR_FILENO,
         };
