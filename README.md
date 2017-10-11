@@ -11,10 +11,11 @@ fn stdout_isatty() -> bool
 fn stderr_isatty() -> bool
 ```
 
-On Linux and Mac they are implemented with
-[`libc::isatty`](http://man7.org/linux/man-pages/man3/isatty.3.html).
-On Windows they are implemented with
-[`kernel32::GetConsoleMode`](https://msdn.microsoft.com/en-us/library/windows/desktop/ms683167.aspx).
+On Linux and Mac they are implemented with [`libc::isatty`]. On Windows they are
+implemented with [`kernel32::GetConsoleMode`].
+
+[`libc::isatty`]: http://man7.org/linux/man-pages/man3/isatty.3.html
+[`kernel32::GetConsoleMode`]: https://msdn.microsoft.com/en-us/library/windows/desktop/ms683167.aspx
 
 The `stdin_isatty` function is not yet implemented for Windows. If you need it,
 please check [dtolnay/isatty#1] and contribute an implementation!
@@ -35,7 +36,7 @@ please check [dtolnay/isatty#1] and contribute an implementation!
 > ```rust
 > extern crate isatty;
 > use isatty::{stdin_isatty, stdout_isatty, stderr_isatty};
-> 
+>
 > fn main() {
 >     println!("stdin: {}", stdin_isatty());
 >     println!("stdout: {}", stdout_isatty());
