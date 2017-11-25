@@ -12,10 +12,12 @@
 //! ```
 //!
 //! On Linux and Mac they are implemented with [`libc::isatty`]. On Windows they
-//! are implemented with [`kernel32::GetConsoleMode`].
+//! are implemented with [`kernel32::GetConsoleMode`]. On Redox they are
+//! implemented with [`termion::is_tty`].
 //!
 //! [`libc::isatty`]: http://man7.org/linux/man-pages/man3/isatty.3.html
 //! [`kernel32::GetConsoleMode`]: https://msdn.microsoft.com/en-us/library/windows/desktop/ms683167.aspx
+//! [`termion::is_tty`]: https://docs.rs/termion/1.5.1/termion/fn.is_tty.html
 //!
 //! The `stdin_isatty` function is not yet implemented for Windows. If you need
 //! it, please check [dtolnay/isatty#1] and contribute an implementation!
@@ -50,7 +52,7 @@
 //  - https://github.com/rust-lang/cargo/blob/099ad28104fe319f493dc42e0c694d468c65767d/src/cargo/lib.rs#L154-L178
 //  - https://github.com/BurntSushi/ripgrep/issues/94#issuecomment-261761687
 
-#[cfg(unix)]
+#[cfg(not(windows))]
 pub fn stdin_isatty() -> bool {
     isatty(stream::Stream::Stdin)
 }
@@ -65,7 +67,7 @@ pub fn stderr_isatty() -> bool {
 
 mod stream {
     pub enum Stream {
-        #[cfg(unix)]
+        #[cfg(not(windows))]
         Stdin,
         Stdout,
         Stderr,
@@ -152,6 +154,24 @@ mod windows {
                 .to_string_lossy()
                 .into_owned();
             name.contains("msys-") || name.contains("-pty")
+        }
+    }
+}
+
+#[cfg(target_os = "redox")]
+use redox::isatty;
+#[cfg(target_os = "redox")]
+mod redox {
+    use stream::Stream;
+
+    pub fn isatty(stream: Stream) -> bool {
+        extern crate termion;
+        use std::io;
+
+        match stream {
+            Stream::Stdin => termion::is_tty(&io::stdin()),
+            Stream::Stdout => termion::is_tty(&io::stdout()),
+            Stream::Stderr => termion::is_tty(&io::stderr()),
         }
     }
 }
