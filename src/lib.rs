@@ -46,7 +46,7 @@
 //! > }
 //! > ```
 
-#![doc(html_root_url = "https://docs.rs/isatty/0.1.5")]
+#![doc(html_root_url = "https://docs.rs/isatty/0.1.6")]
 
 // Based on:
 //  - https://github.com/rust-lang/cargo/blob/099ad28104fe319f493dc42e0c694d468c65767d/src/cargo/lib.rs#L154-L178
