@@ -20,3 +20,6 @@ libc = "0.2"
 [target.'cfg(windows)'.dependencies]
 kernel32-sys = "0.2"
 winapi = "0.2"
+
+[target.'cfg(target_os = "redox")'.dependencies]
+termion = "1.5"
