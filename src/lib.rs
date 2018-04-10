@@ -165,13 +165,21 @@ mod redox {
     use stream::Stream;
 
     pub fn isatty(stream: Stream) -> bool {
-        extern crate termion;
+        extern crate syscall;
         use std::io;
+        use std::os::unix::io::AsRawFd;
 
-        match stream {
-            Stream::Stdin => termion::is_tty(&io::stdin()),
-            Stream::Stdout => termion::is_tty(&io::stdout()),
-            Stream::Stderr => termion::is_tty(&io::stderr()),
+        let raw_fd = match stream {
+            Stream::Stdin => io::stdin().as_raw_fd(),
+            Stream::Stdout => io::stdout().as_raw_fd(),
+            Stream::Stderr => io::stderr().as_raw_fd(),
+        };
+
+        if let Ok(fd) = syscall::dup(raw_fd, b"termios") {
+            let _ = syscall::close(fd);
+            true
+        } else {
+            false
         }
     }
 }
