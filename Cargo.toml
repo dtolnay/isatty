@@ -1,6 +1,6 @@
 [package]
 name = "isatty"
-version = "0.1.7"
+version = "0.1.8"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
 license = "MIT/Apache-2.0"
 description = "libc::isatty that also works on Windows"
