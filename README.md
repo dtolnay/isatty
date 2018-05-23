@@ -13,10 +13,10 @@ fn stderr_isatty() -> bool
 ```
 
 On Linux and Mac they are implemented with [`libc::isatty`]. On Windows they are
-implemented with [`kernel32::GetConsoleMode`].
+implemented with [`consoleapi::GetConsoleMode`].
 
 [`libc::isatty`]: http://man7.org/linux/man-pages/man3/isatty.3.html
-[`kernel32::GetConsoleMode`]: https://msdn.microsoft.com/en-us/library/windows/desktop/ms683167.aspx
+[`consoleapi::GetConsoleMode`]: https://msdn.microsoft.com/en-us/library/windows/desktop/ms683167.aspx
 
 The `stdin_isatty` function is not yet implemented for Windows. If you need it,
 please check [dtolnay/isatty#1] and contribute an implementation!

@@ -12,11 +12,11 @@
 //! ```
 //!
 //! On Linux and Mac they are implemented with [`libc::isatty`]. On Windows they
-//! are implemented with [`kernel32::GetConsoleMode`]. On Redox they are
+//! are implemented with [`consoleapi::GetConsoleMode`]. On Redox they are
 //! implemented with [`termion::is_tty`].
 //!
 //! [`libc::isatty`]: http://man7.org/linux/man-pages/man3/isatty.3.html
-//! [`kernel32::GetConsoleMode`]: https://msdn.microsoft.com/en-us/library/windows/desktop/ms683167.aspx
+//! [`consoleapi::GetConsoleMode`]: https://msdn.microsoft.com/en-us/library/windows/desktop/ms683167.aspx
 //! [`termion::is_tty`]: https://docs.rs/termion/1.5.1/termion/fn.is_tty.html
 //!
 //! The `stdin_isatty` function is not yet implemented for Windows. If you need
@@ -97,19 +97,18 @@ mod unix {
 use windows::isatty;
 #[cfg(windows)]
 mod windows {
-    extern crate kernel32;
     extern crate winapi;
 
     use stream::Stream;
 
     pub fn isatty(stream: Stream) -> bool {
         let handle = match stream {
-            Stream::Stdout => winapi::winbase::STD_OUTPUT_HANDLE,
-            Stream::Stderr => winapi::winbase::STD_ERROR_HANDLE,
+            Stream::Stdout => winapi::um::winbase::STD_OUTPUT_HANDLE,
+            Stream::Stderr => winapi::um::winbase::STD_ERROR_HANDLE,
         };
 
         unsafe {
-            let handle = kernel32::GetStdHandle(handle);
+            let handle = winapi::um::processenv::GetStdHandle(handle);
 
             // check for msys/cygwin
             if is_cygwin_pty(handle) {
@@ -117,29 +116,29 @@ mod windows {
             }
 
             let mut out = 0;
-            kernel32::GetConsoleMode(handle, &mut out) != 0
+            winapi::um::consoleapi::GetConsoleMode(handle, &mut out) != 0
         }
     }
 
     /// Returns true if there is an MSYS/cygwin tty on the given handle.
-    fn is_cygwin_pty(handle: winapi::HANDLE) -> bool {
+    fn is_cygwin_pty(handle: winapi::um::winnt::HANDLE) -> bool {
         use std::ffi::OsString;
         use std::mem;
-        use std::os::raw::c_void;
         use std::os::windows::ffi::OsStringExt;
         use std::slice;
 
-        use self::kernel32::GetFileInformationByHandleEx;
-        use self::winapi::fileapi::FILE_NAME_INFO;
-        use self::winapi::minwinbase::FileNameInfo;
-        use self::winapi::minwindef::MAX_PATH;
+        use self::winapi::um::winbase::GetFileInformationByHandleEx;
+        use self::winapi::um::fileapi::FILE_NAME_INFO;
+        use self::winapi::um::minwinbase::FileNameInfo;
+        use self::winapi::shared::minwindef::MAX_PATH;
+        use self::winapi::shared::minwindef::LPVOID;
 
         unsafe {
             let size = mem::size_of::<FILE_NAME_INFO>();
             let mut name_info_bytes = vec![0u8; size + MAX_PATH];
             let res = GetFileInformationByHandleEx(handle,
                                                 FileNameInfo,
-                                                &mut *name_info_bytes as *mut _ as *mut c_void,
+                                                &mut *name_info_bytes as *mut _ as LPVOID,
                                                 name_info_bytes.len() as u32);
             if res == 0 {
                 return true;
